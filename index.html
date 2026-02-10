@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>For My Love ❤️</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500&family=Dancing+Script:wght@700&display=swap" rel="stylesheet">
+
+<style>
+body{
+ margin:0;
+ background:black;
+ overflow:hidden;
+ font-family:'Poppins',sans-serif;
+ color:white;
+}
+
+/* ===== SECTION ===== */
+.section{
+ position:absolute;
+ width:100%;
+ height:100%;
+ display:flex;
+ justify-content:center;
+ align-items:center;
+ flex-direction:column;
+ opacity:0;
+ transition:1.2s;
+ pointer-events:none;
+}
+.section.active{
+ opacity:1;
+ pointer-events:auto;
+}
+
+button{
+ padding:12px 30px;
+ border:none;
+ border-radius:30px;
+ background:#ff4d88;
+ color:white;
+ cursor:pointer;
+}
+
+canvas{
+ position:fixed;
+ top:0;
+ left:0;
+ z-index:-3;
+}
+
+/* ===== SLIDES ===== */
+#slideshow{
+ position:absolute;
+ width:100%;
+ height:100%;
+}
+
+.slide{
+ position:absolute;
+ width:100%;
+ height:100%;
+ opacity:0;
+ transition:opacity 2s ease;
+}
+
+/* blurred bg */
+.bg{
+ position:absolute;
+ width:100%;
+ height:100%;
+ background-size:cover;
+ background-position:center;
+ filter:blur(40px) brightness(0.5);
+ transform:scale(1.2);
+}
+
+/* main image */
+.main{
+ position:absolute;
+ width:100%;
+ height:100%;
+ background-size:contain;
+ background-repeat:no-repeat;
+ background-position:center;
+}
+
+/* ===== SIDE MESSAGE STYLE ===== */
+.msg{
+ position:absolute;
+ bottom:80px;
+ max-width:40%;
+ padding:15px 25px;
+ border-radius:20px;
+ font-family:'Dancing Script';
+ font-size:30px;
+ backdrop-filter:blur(6px);
+ background:rgba(0,0,0,0.35);
+}
+
+/* alternate sides */
+.left{ left:5%; text-align:left; }
+.right{ right:5%; text-align:right; }
+
+/* end screen */
+#end{
+ background:black;
+ display:flex;
+ justify-content:center;
+ align-items:center;
+ font-size:70px;
+ font-family:'Dancing Script';
+}
+
+/* no button */
+#no{ position:absolute;background:#444; }
+</style>
+</head>
+
+<body>
+
+<canvas id="stars"></canvas>
+<canvas id="petals"></canvas>
+
+<!-- ✅ LOOP REMOVED HERE -->
+<audio id="music">
+<source src="music.mp3">
+</audio>
+
+<!-- LANDING -->
+<div class="section active" id="landing">
+<h1 id="typing"></h1>
+<button onclick="startGame()">Enter My Heart ❤️</button>
+</div>
+
+<!-- GAME -->
+<div class="section" id="game">
+<h1>Find 5 Hearts ❤️</h1>
+<p id="count">0/5</p>
+</div>
+
+<!-- PROPOSAL -->
+<div class="section" id="proposal">
+<h1>Will you be my Valentine? ❤️</h1>
+<button onclick="yes()">YES 💖</button>
+<button id="no">NO 😜</button>
+<p id="funny"></p>
+</div>
+
+<!-- SLIDES -->
+<div class="section" id="special">
+<div id="slideshow"></div>
+</div>
+
+<!-- END -->
+<div class="section" id="end">
+I Love You ❤️
+</div>
+
+<script>
+function show(id){
+ document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
+ document.getElementById(id).classList.add('active');
+}
+
+/* typing */
+let t="I created something magical... only for you ❤️";
+let i=0;
+(function(){ if(i<t.length){ typing.innerHTML+=t[i++]; setTimeout(arguments.callee,35);} })();
+
+/* simple stars */
+const sctx=stars.getContext("2d");
+stars.width=innerWidth; stars.height=innerHeight;
+let s=[];
+for(let i=0;i<120;i++)s.push({x:Math.random()*innerWidth,y:Math.random()*innerHeight});
+(function draw(){sctx.clearRect(0,0,innerWidth,innerHeight);s.forEach(a=>{sctx.fillRect(a.x,a.y,2,2);a.y+=.2;if(a.y>innerHeight)a.y=0});requestAnimationFrame(draw)})();
+
+/* petals */
+const pctx=petals.getContext("2d");
+petals.width=innerWidth; petals.height=innerHeight;
+let p=[];
+for(let i=0;i<30;i++)p.push({x:Math.random()*innerWidth,y:Math.random()*innerHeight});
+(function(){pctx.clearRect(0,0,innerWidth,innerHeight);p.forEach(pt=>{pctx.fillText("🌸",pt.x,pt.y);pt.y+=1;if(pt.y>innerHeight)pt.y=0});requestAnimationFrame(arguments.callee)})();
+
+/* game */
+let found=0;
+function startGame(){
+ show("game");
+ for(let i=0;i<5;i++){
+  let h=document.createElement("div");
+  h.innerHTML="❤️";
+  h.style.position="absolute";
+  h.style.left=Math.random()*90+"vw";
+  h.style.top=Math.random()*80+"vh";
+  h.onclick=()=>{h.remove();found++;count.innerText=found+"/5";if(found==5)show("proposal");};
+  game.appendChild(h);
+ }
+}
+
+/* NO button */
+const msgs=["Please baby 🥹","please misti doi 🍨😂","I am not coming Delhi anymore 🚆","love you... please don't do this😭"];
+let idx=0;
+no.onmouseover=()=>{no.style.left=Math.random()*80+"vw";no.style.top=Math.random()*80+"vh";funny.innerText=msgs[idx++%msgs.length];};
+
+/* slideshow */
+const messages=[
+"Our first memory together ❤️",
+"The day you smiled at me 🌸",
+"Your laugh is my favorite sound 😄",
+"Every moment feels magical ✨",
+"You make my world brighter ☀️",
+"I found my home in you 🫶",
+"With you, life is beautiful 💕",
+"Forever holding your hand 🤝",
+"You are my peace 🌙",
+"My favorite person always 💖",
+"I am always with you ❤️"
+];
+
+function yes(){
+ show("special");
+ music.play();   // plays once only
+ startSlides();
+}
+
+function startSlides(){
+ const container=document.getElementById("slideshow");
+
+ for(let i=1;i<=11;i++){
+  let side = (i%2===0) ? "right" : "left";
+
+  let slide=document.createElement("div");
+  slide.className="slide";
+  slide.innerHTML=`
+   <div class="bg" style="background-image:url(images/photo${i}.jpg)"></div>
+   <div class="main" style="background-image:url(images/photo${i}.jpg)"></div>
+   <div class="msg ${side}">${messages[i-1]}</div>
+  `;
+  container.appendChild(slide);
+ }
+
+ let slides=document.querySelectorAll(".slide");
+ let j=0;
+ slides[0].style.opacity=1;
+
+ let interval=setInterval(()=>{
+  slides[j].style.opacity=0;
+  j++;
+  if(j>=slides.length){
+   clearInterval(interval);
+   setTimeout(()=>show("end"),3000);
+   return;
+  }
+  slides[j].style.opacity=1;
+ },6000);
+}
+</script>
+
+</body>
+</html>
